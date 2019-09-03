@@ -44,7 +44,7 @@ done
 
 if [ $PCKG_MANAGER = "pacman" ]; then
     PCKG_UPDATE='sudo pacman --noconfirm -Syyu'
-    PCKG_INSTALL='sudo pacman --noconfirm -S'
+    PCKG_INSTALL='sudo pacman --noconfirm -Sy'
 elif [ $PCKG_MANAGER = "apt-get" ]; then
     PCKG_UPDATE='sudo apt-get -y update; sudo apt-get -y upgrade'
     PCKG_INSTALL='sudo apt-get install'
@@ -70,14 +70,128 @@ function error_handling
     fi
 }
 
+function change_shell
+{
+    echo -n "Would you like to change to zsh ? [Y/n]"
+    read choice
+    case $choice in
+        n|N) return;;
+        *) chsh $USER -s /usr/bin/zsh; source .zshrc
+    esac
+}
+
+function epitech_student
+{
+    echo -en "Are you an EPITECH student ? [Y/n]"
+    read isStudent
+    case $isStudent in
+        n|N) return;;
+    esac
+
+    echo -e $BLUE '---------------------------\n  INSTALLING BLIH\n---------------------------' $DEFAULT
+    $PCKG_INSTALL blih
+    error_handling $?
+    echo -e $GREEN "\n======  Successfully installed blih  ======\n" $DEFAULT
+    echo -en "Enter your login : "
+    read email
+    echo "Pls enter your password :"
+    blih -u $email sshkey upload /home/$USER/.ssh/id_rsa.pub
+    error_handling $?
+}
+
 #------ INSTALL -------
+echo -e $BLUE "---------------------------\n  UPDATING SYSTEM\n----------------------------" $DEFAULT
 $PCKG_UPDATE
+error_handling $?
+echo -e $GREEN "\n======  Successfully update  ======\n" $DEFAULT
+
+echo -e $BLUE '---------------------------\n  INSTALLING CURL AND WGET\n---------------------------' $DEFAULT
+$PCKG_INSTALL curl
+error_handling $?
+$PCKG_INSTALL wget
+error_handling $?
+echo -e $GREEN "\n======  Successfully installed curl and wget ======\n" $DEFAULT
+
+echo -e $BLUE "---------------------------\n  INSTALLING EDITORS\n----------------------------" $DEFAULT
 $PCKG_INSTALL nano
+error_handling $?
+$PCKG_INSTALL vim
 error_handling $?
 $PCKG_INSTALL emacs
 error_handling $?
 $PCKG_INSTALL code
 error_handling $?
+echo -e $GREEN "\n======  Successfully installed editors  ======\n" $DEFAULT
 
-echo -e $GREEN "\n======= Successfully installed editors ======\n" $DEFAULT
+echo -e $BLUE '---------------------------\n  INSTALLING python\n---------------------------' $DEFAULT
+$PCKG_INSTALL python3
+error_handling $?
+echo -e $GREEN "\n======  Successfully installed python  ======\n" $DEFAULT
 
+echo -e $BLUE '---------------------------\n  INSTALLING GIT\n---------------------------' $DEFAULT
+$PCKG_INSTALL git
+error_handling $?
+echo -e $GREEN "\n======  Successfully installed git  ======\n" $DEFAULT
+
+echo -e $BLUE '---------------------------\n  INSTALLING TERM\n---------------------------' $DEFAULT
+$PCKG_INSTALL zsh
+error_handling $?
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+error_handling $?
+change_shell
+error_handling $?
+$PCKG_INSTALL terminator
+error_handling $?
+echo -e $GREEN "\n======  Successfully installed term and shell config  ======\n" $DEFAULT
+
+echo -e $BLUE '---------------------------\n  INSTALLING GCC\n---------------------------' $DEFAULT
+$PCKG_INSTALL gcc
+error_handling $?
+echo -e $GREEN "\n======  Successfully installed gcc  ======\n" $DEFAULT
+
+echo -e $BLUE '---------------------------\n  INSTALLING DOCKER \n---------------------------' $DEFAULT
+$PCKG_INSTALL docker docker-compose
+error_handling $?
+echo -e $GREEN "\n======  Successfully installed docker  ======\n" $DEFAULT
+
+echo -e $BLUE '---------------------------\n  SSH KEY GEN\n---------------------------' $DEFAULT
+$PCKG_INSTALL openssh
+echo -e $BLUE "LEAVE EVERYTHING AS DEFAULT" $DEFAULT
+ssh-keygen
+error_handling $?
+epitech_student
+echo -e $GREEN "\n======  SSH ready  ======\n" $DEFAULT
+
+echo -e $BLUE '---------------------------\n  INSTALLING NODE\n---------------------------' $DEFAULT
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+$PCKG_INSTALL nodejs
+error_handling $?
+echo -en $GREEN "NODE VERSION : " (`node -v`) $DEFAULT
+echo -en $GREEN "NPM VERSION : " (`npm -v`) $DEFAULT
+echo -e $GREEN "\n======  Successfully installed curl  ======\n" $DEFAULT
+
+echo -e $BLUE '---------------------------\n  INSTALLING TOOLS\n---------------------------' $DEFAULT
+echo -e $BLUE "\n======  VALGRIND  ======\n" $DEFAULT 
+$PCKG_INSTALL valgrind
+error_handling $?
+echo -e $BLUE "\n======  TREE  ======\n" $DEFAULT 
+$PCKG_INSTALL tree
+error_handling $?
+echo -e $BLUE "\n======  NCURSE  ======\n" $DEFAULT 
+$PCKG_INSTALL libncurses5
+error_handling $?
+echo -e $BLUE "\n======  FIREFOX  ======\n" $DEFAULT 
+$PCKG_INSTALL firefox
+error_handling $?
+echo -e $BLUE "\n======  GITKRAKEN  ======\n" $DEFAULT 
+$PCKG_INSTALL gitkraken
+error_handling $?
+echo -e $BLUE "\n======  HTOP  ======\n" $DEFAULT 
+$PCKG_INSTALL htop
+error_handling $?
+echo -e $BLUE "\n======  ALIAS  ======\n" $DEFAULT 
+echo "alias cls='clear; ls -l'" >> ~/.zshrc
+echo "alias ne='emacs -nw'" >> ~/.zshrc
+echo "alias dc='docker-compose'" >> ~/.zshrc
+echo "alias please='sudo'" >> ~/.zshrc
+echo -e $GREEN "\n======  Successfully installed tools  ======\n" $DEFAULT
