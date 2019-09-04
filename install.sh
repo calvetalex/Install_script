@@ -1,5 +1,7 @@
 #! /bin/sh
 
+cd ~
+
 #-----COLOR--------
 RED='\033[1;31m'
 YELLOW='\033[1;93m'
@@ -94,6 +96,24 @@ $PCKG_INSTALL wget
 error_handling $?
 echo -e $GREEN "\n======  Successfully installed curl and wget ======\n" $DEFAULT
 
+echo -e $BLUE '---------------------------\n  INSTALLING python\n---------------------------' $DEFAULT
+$PCKG_INSTALL python3
+error_handling $?
+echo -e $GREEN "\n======  Successfully installed python  ======\n" $DEFAULT
+
+echo -e $BLUE '---------------------------\n  INSTALLING GIT\n---------------------------' $DEFAULT
+$PCKG_INSTALL git
+error_handling $?
+echo -e $GREEN "\n======  Successfully installed git  ======\n" $DEFAULT
+
+if [ $PCKG_MANAGER = 'pacman' ]; then
+    echo -e $YELLOW '====  UPDATING YOUR PACKAGE MANAGER  ===='
+    git clone https://aur.archlinux.org/yay.git
+    cd yay
+    makepkg -si
+    PCKG_INSTALL='yay -Sy'
+fi
+
 echo -e $BLUE "---------------------------\n  INSTALLING EDITORS\n----------------------------" $DEFAULT
 echo -e $YELLOW "\n======  NANO  ======\n" $DEFAULT 
 $PCKG_INSTALL nano
@@ -108,16 +128,6 @@ echo -e $YELLOW "\n======  CODE  ======\n" $DEFAULT
 $PCKG_INSTALL code
 error_handling $?
 echo -e $GREEN "\n======  Successfully installed editors  ======\n" $DEFAULT
-
-echo -e $BLUE '---------------------------\n  INSTALLING python\n---------------------------' $DEFAULT
-$PCKG_INSTALL python3
-error_handling $?
-echo -e $GREEN "\n======  Successfully installed python  ======\n" $DEFAULT
-
-echo -e $BLUE '---------------------------\n  INSTALLING GIT\n---------------------------' $DEFAULT
-$PCKG_INSTALL git
-error_handling $?
-echo -e $GREEN "\n======  Successfully installed git  ======\n" $DEFAULT
 
 echo -e $BLUE '---------------------------\n  INSTALLING TERM\n---------------------------' $DEFAULT
 echo -e $YELLOW "\n======  ZSH  ======\n" $DEFAULT 
