@@ -155,6 +155,8 @@ echo -e $BLUE '---------------------------\n  INSTALLING NODE\n-----------------
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 $PCKG_INSTALL nodejs
 error_handling $?
+$PCKG_INSTALL npm
+error_handling $?
 echo -en $GREEN "NODE VERSION : " $(node -v) $DEFAULT
 echo -en $GREEN "NPM VERSION : " $(npm -v) $DEFAULT
 echo -e $GREEN "\n======  Successfully installed curl  ======\n" $DEFAULT
@@ -167,7 +169,11 @@ echo -e $YELLOW "\n======  TREE  ======\n" $DEFAULT
 $PCKG_INSTALL tree
 error_handling $?
 echo -e $YELLOW "\n======  NCURSE  ======\n" $DEFAULT 
-$PCKG_INSTALL libncurses5
+if [ $PCKG_MANAGER = 'apt-get' ]; then
+    $PCKG_INSTALL libncurses5-dev libncursesw5-dev
+elif [ $PCKG_MANAGER = 'pacman' ]; then
+    $PCKG_INSTALL ncurses
+fi
 error_handling $?
 echo -e $YELLOW "\n======  FIREFOX  ======\n" $DEFAULT 
 $PCKG_INSTALL firefox
