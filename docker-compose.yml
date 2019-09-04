@@ -1,0 +1,15 @@
+version: '3.5'
+
+services:
+  test_ubuntu:
+    image: ubuntu
+    container_name: ubuntu_test
+    volumes:
+      - ./:/script
+    tty: true
+  test_manjaro:
+    image: testing_arch
+    container_name: manjaro_test
+    volumes:
+      - ./:/script
+    tty: true
