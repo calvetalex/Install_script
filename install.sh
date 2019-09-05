@@ -18,7 +18,7 @@ if [ "$(id -u)" == "0" ]; then
 fi
 
 if [ $# -ne 0 ]; then
-    echo -e $RED "===== No argument required =====" $DEFAULT
+    echo -e $RED "======= No argument required =======" $DEFAULT
     exit 84
 fi
 
@@ -88,56 +88,84 @@ function change_shell
     esac
 }
 
+function drawline {
+    printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' $1
+}
+
+function begin {
+    echo -e $BLUE
+    drawline '-'
+    echo "    $1"
+    drawline '-'
+    echo -e $DEFAULT
+}
+
+function success {
+    echo -e $GREEN
+    drawline '='
+    echo "    $1"
+    drawline '='
+    echo -e $DEFAULT
+}
+
+function info {
+    echo -e $YELLOW
+    drawline '#'
+    echo "=> $1"
+    drawline '#'
+    echo -e $DEFAULT
+}
+
 #------ INSTALL -------
-echo -e $BLUE"---------------------------\n  UPDATING SYSTEM\n----------------------------" $DEFAULT
+begin "UPDATE SYSTEM"
 $PCKG_UPDATE
 error_handling $?
-echo -e $GREEN "\n======  Successfully update  ======\n" $DEFAULT
+success "SYSTEM UP TO DATE"
 
-echo -e $BLUE'---------------------------\n  INSTALLING CURL AND WGET\n---------------------------' $DEFAULT
+begin "INSTALL CURL && WGET"
 $PCKG_INSTALL curl
 error_handling $?
 $PCKG_INSTALL wget
 error_handling $?
-echo -e $GREEN "\n======  Successfully installed curl and wget ======\n" $DEFAULT
+success "CURL && WGET READY"
 
-echo -e $BLUE'---------------------------\n  INSTALLING python\n---------------------------' $DEFAULT
+begin "UPDATING PYTHON to PYTHON3"
 $PCKG_INSTALL python3
 error_handling $?
-echo -e $GREEN "\n======  Successfully installed python  ======\n" $DEFAULT
+success "PYTHON READY"
 
-echo -e $BLUE'---------------------------\n  INSTALLING GIT\n---------------------------' $DEFAULT
+begin "INSTALLING GIT"
 $PCKG_INSTALL git
 error_handling $?
-echo -e $GREEN "\n======  Successfully installed git  ======\n" $DEFAULT
+success "SUCCESSFULLY INSTALLED GIT"
 
-echo -e $BLUE"---------------------------\n  INSTALLING EDITORS\n----------------------------" $DEFAULT
-echo -e $YELLOW "\n======  NANO  ======\n" $DEFAULT 
+begin "INSTALLING EDITORS"
+info "NANO"
 $PCKG_INSTALL nano
 error_handling $?
-echo -e $YELLOW "\n======  VIM  ======\n" $DEFAULT 
+info "VIM"
 $PCKG_INSTALL vim
 error_handling $?
-echo -e $YELLOW "\n======  EMACS  ======\n" $DEFAULT 
+info "EMACS"
 $PCKG_INSTALL emacs
 error_handling $?
 if [ "$PCKG_MANAGER" != "apt" ];then
-    echo -e $YELLOW "\n======  CODE  ======\n" $DEFAULT 
+    info "CODE"
     $PCKG_INSTALL code
     error_handling $?
 fi
-echo -e $GREEN "\n======  Successfully installed editors  ======\n" $DEFAULT
+success "SUCCESSFULLY INSTALLED EDITORS"
 
-echo -e $BLUE'---------------------------\n  INSTALLING TERM\n---------------------------' $DEFAULT
-echo -e $YELLOW "\n======  ZSH  ======\n" $DEFAULT 
+begin "INSTALL TERMS && SHELL"
+info "ZSH"
 $PCKG_INSTALL zsh
 error_handling $?
-echo -e $YELLOW "\n======  OH-MY-ZSH  ======\n" $DEFAULT
+info "OH-MY-ZSH"
 if [ "$PCKG_MANAGER" == "pacman" ];then
     $PCKG_INSTALL awk
     error_handling $?
 fi
-echo -e $RED"please, enter exit when zsh will start"$DEFAULT
+echo -e $RED"/!\\ Please, enter exit when zsh will start" $DEFAULT
 curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh > oh-my-zsh.sh
 sed -i "s:env zsh:exit:g" oh-my-zsh.sh
 chmod 755 oh-my-zsh.sh
@@ -145,33 +173,33 @@ chmod 755 oh-my-zsh.sh
 rm oh-my-zsh.sh
 change_shell
 error_handling $?
-echo -e $BLUE"==== ADDING DIFF TERMS ====" $DEFAULT
-echo -e $YELLOW "\n======  TERMINATOR  ======\n" $DEFAULT 
+begin "ADDING TERMS"
+info "Terminator"
 $PCKG_INSTALL terminator
 error_handling $?
-echo -e $YELLOW "\n======  TMUX  ======\n" $DEFAULT
+info "Tmux"
 $PCKG_INSTALL tmux
 error_handling $?
-echo -e $GREEN "\n======  Successfully installed term and shell config  ======\n" $DEFAULT
+success "SUCCESSFULLY INSTALLED TERMS AND SHELL"
 
-echo -e $BLUE'---------------------------\n  INSTALLING GCC\n---------------------------' $DEFAULT
+begin "GCC"
 $PCKG_INSTALL gcc
 error_handling $?
-echo -e $GREEN "\n======  Successfully installed gcc  ======\n" $DEFAULT
+success "SUCCESSFULLY INSTALLED GCC"
 
-echo -e $BLUE'---------------------------\n  INSTALLING DOCKER \n---------------------------' $DEFAULT
+begin "INSTALL DOCKER AND DOCKER-COMPOSE"
 $PCKG_INSTALL docker docker-compose
 error_handling $?
-echo -e $GREEN "\n======  Successfully installed docker  ======\n" $DEFAULT
+success "SUCCESSFULLY INSTALLED DOCKER AND DOCKER-COMPOSE"
 
-echo -e $BLUE'---------------------------\n  SSH KEY GEN\n---------------------------' $DEFAULT
+begin "INSTALL SSH TOOLS"
 $PCKG_INSTALL openssh
-echo -e $BLUE "LEAVE EVERYTHING AS DEFAULT" $DEFAULT
+echo -e $BLUE "=> LEAVE EVERYTHING AS DEFAULT" $DEFAULT
 ssh-keygen
 error_handling $?
-echo -e $GREEN "\n======  SSH ready  ======\n" $DEFAULT
+success "SSH READY"
 
-echo -e $BLUE'---------------------------\n  INSTALLING NODE\n---------------------------' $DEFAULT
+begin "INSTALL NODE"
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 $PCKG_INSTALL nodejs
 error_handling $?
@@ -179,37 +207,37 @@ $PCKG_INSTALL npm
 error_handling $?
 echo -en $GREEN "NODE VERSION : " $(node -v) $DEFAULT
 echo -en $GREEN "NPM VERSION : " $(npm -v) $DEFAULT
-echo -e $GREEN "\n======  Successfully installed node  ======\n" $DEFAULT
+success "SUCCESSFULLY INSTALLED NODE"
 
-echo -e $BLUE'---------------------------\n  INSTALLING TOOLS\n---------------------------' $DEFAULT
-echo -e $YELLOW "\n======  VALGRIND  ======\n" $DEFAULT 
+begin "INSTALL TOOLS"
+info "Valgrind"
 $PCKG_INSTALL valgrind
 error_handling $?
-echo -e $YELLOW "\n======  TREE  ======\n" $DEFAULT 
+info "Tree"
 $PCKG_INSTALL tree
 error_handling $?
-echo -e $YELLOW "\n======  NCURSE  ======\n" $DEFAULT 
+info "NCURSE"
 if [ $PCKG_MANAGER == 'apt' ]; then
     $PCKG_INSTALL libncurses5-dev libncursesw5-dev
 elif [ $PCKG_MANAGER == 'pacman' ]; then
     $PCKG_INSTALL ncurses
 fi
 error_handling $?
-echo -e $YELLOW "\n======  FIREFOX  ======\n" $DEFAULT 
+info "Firefox"
 $PCKG_INSTALL firefox
 error_handling $?
-echo -e $YELLOW "\n======  HTOP  ======\n" $DEFAULT 
+info "HTOP"
 $PCKG_INSTALL htop
 error_handling $?
-echo -e $YELLOW "\n======  ALIAS  ======\n" $DEFAULT
-echo -e $YELLOW"adding cls for clear && ls"
+info "ALIAS"
+echo -e $YELLOW"--> adding cls for clear && ls"
 echo "alias cls='clear; ls -l'" >> ~/.zshrc
-echo "adding ne for emacs -nw"
+echo "--> adding ne for emacs -nw"
 echo "alias ne='emacs -nw'" >> ~/.zshrc
-echo "adding dc for docker-compose"
+echo "--> adding dc for docker-compose"
 echo "alias dc='docker-compose'" >> ~/.zshrc
-echo -e "adding please for sudo" $DEFAULT
+echo -e "--> adding please for sudo" $DEFAULT
 echo "alias please='sudo'" >> ~/.zshrc
-echo -e $GREEN "\n======  Successfully installed tools  ======\n" $DEFAULT
+success "SUCCESSFULLY INSTALLED TOOLS"
 
 echo -e $GREEN"\nComputer Ready - Please close and open a new terminal to see changes\n"$DEFAULT
