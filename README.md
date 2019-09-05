@@ -2,8 +2,10 @@
 
 This script will install a basic env to work. More complete on arch, it also works on ubuntu but fewer packages will be installed.
 
+## USE
+Clone the repo and run install.sh in the directory. Install.sh and oh-my-zsh.sh *MUST* be in the same directory.
+
 Known issues : 
-* oh-my-zsh lunch automatically after installing => WIP
 * node crash but installed on ubuntu => TODO
 * code non-avaible for ubuntu => Install it with Ubuntu Software
 
