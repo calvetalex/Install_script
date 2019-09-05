@@ -1,7 +1,5 @@
 #! /bin/bash
 
-cd ~
-
 #-----COLOR--------
 RED='\033[1;31m'
 YELLOW='\033[1;93m'
@@ -19,6 +17,11 @@ fi
 
 if [ $# -ne 0 ]; then
     echo -e $RED "======= No argument required =======" $DEFAULT
+    exit 84
+fi
+
+if [ ! -f "./oh-my-zsh.sh" ]; then
+    echo -e $RED"Please run the script in the same directory as oh-my-zsh.sh"$DEFAULT
     exit 84
 fi
 
@@ -165,13 +168,7 @@ if [ "$PCKG_MANAGER" == "pacman" ];then
     $PCKG_INSTALL awk
     error_handling $?
 fi
-echo -e $RED"/!\\ Please, enter exit when zsh will start" $DEFAULT
-curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh > oh-my-zsh.sh
-sed -i "s:env zsh:exit:g" oh-my-zsh.sh
-chmod 755 oh-my-zsh.sh
 ./oh-my-zsh.sh
-rm oh-my-zsh.sh
-change_shell
 error_handling $?
 begin "ADDING TERMS"
 info "Terminator"
