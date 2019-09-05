@@ -22,7 +22,6 @@ Tested on archlinux/base docker image (https://hub.docker.com/u/archlinux), manj
     * node
     * terminator
     * firefox
-    * gitkraken
     * ssh
     * valgrind
     * git
