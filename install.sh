@@ -34,6 +34,7 @@ fi
 
 declare -A osInfo;
 osInfo[/etc/redhat-release]=yum
+osInfo[/etc/debian_version]=apt
 osInfo[/etc/arch-release]=pacman
 
 
@@ -49,7 +50,7 @@ if [ $PCKG_MANAGER == "pacman" ]; then
     PCKG_UPDATE='sudo pacman --noconfirm -Syyu'
     PCKG_INSTALL='sudo pacman --noconfirm -Sy'
 elif [ $PCKG_MANAGER == "apt" ]; then
-    PCKG_UPDATE='sudo apt -y update; sudo apt-get -y upgrade'
+    PCKG_UPDATE='sudo apt update'
     PCKG_INSTALL='sudo apt install'
 else
     echo -e $RED "Package manager not supported\n" $DEFAULT
@@ -116,9 +117,11 @@ error_handling $?
 echo -e $YELLOW "\n======  EMACS  ======\n" $DEFAULT 
 $PCKG_INSTALL emacs
 error_handling $?
-echo -e $YELLOW "\n======  CODE  ======\n" $DEFAULT 
-$PCKG_INSTALL code
-error_handling $?
+if [ "$PCKG_MANAGER" != "apt" ];then
+    echo -e $YELLOW "\n======  CODE  ======\n" $DEFAULT 
+    $PCKG_INSTALL code
+    error_handling $?
+fi
 echo -e $GREEN "\n======  Successfully installed editors  ======\n" $DEFAULT
 
 echo -e $BLUE '---------------------------\n  INSTALLING TERM\n---------------------------' $DEFAULT
@@ -126,8 +129,10 @@ echo -e $YELLOW "\n======  ZSH  ======\n" $DEFAULT
 $PCKG_INSTALL zsh
 error_handling $?
 echo -e $YELLOW "\n======  OH-MY-ZSH  ======\n" $DEFAULT
-$PCKG_INSTALL awk
-error_handling $? 
+if [ "$PCKG_MANAGER" == "pacman" ];then
+    $PCKG_INSTALL awk
+    error_handling $?
+fi 
 curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh > oh-my-zsh.sh
 sed -i "s:env zsh:exit:g" oh-my-zsh.sh
 chmod 755 oh-my-zsh.sh
