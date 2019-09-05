@@ -76,7 +76,7 @@ function error_handling
 
 function change_shell
 {
-    echo -n "Would you like to change to zsh ? [Y/n]"
+    echo -en $YELLOW"Would you like to change to zsh ? [Y/n]"$DEFAULT
     read choice
     case $choice in
         n|N) return;;
@@ -140,8 +140,12 @@ chmod 755 oh-my-zsh.sh
 rm oh-my-zsh.sh
 change_shell
 error_handling $?
+echo -e $BLUE"==== ADDING DIFF TERMS ====" $DEFAULT
 echo -e $YELLOW "\n======  TERMINATOR  ======\n" $DEFAULT 
 $PCKG_INSTALL terminator
+error_handling $?
+echo -e $YELLOW "\n======  TMUX  ======\n" $DEFAULT
+$PCKG_INSTALL tmux
 error_handling $?
 echo -e $GREEN "\n======  Successfully installed term and shell config  ======\n" $DEFAULT
 
