@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 cd ~
 
@@ -48,9 +48,9 @@ done
 if [ $PCKG_MANAGER = "pacman" ]; then
     PCKG_UPDATE='sudo pacman --noconfirm -Syyu'
     PCKG_INSTALL='sudo pacman --noconfirm -Sy'
-elif [ $PCKG_MANAGER = "apt-get" ]; then
-    PCKG_UPDATE='sudo apt-get -y update; sudo apt-get -y upgrade'
-    PCKG_INSTALL='sudo apt-get install'
+elif [ $PCKG_MANAGER = "apt" ]; then
+    PCKG_UPDATE='sudo apt -y update; sudo apt-get -y upgrade'
+    PCKG_INSTALL='sudo apt install'
 else
     echo -e $RED "Package manager not supported\n" $DEFAULT
     exit 84
@@ -64,7 +64,7 @@ function error_handling
     if [ $res -eq 0 ]; then
         return
     else
-        echo -e $RED "[AN ERROR OCCURRED]" $DEFAULT "stop installation ? [Y/n]"
+        echo -en $RED "[AN ERROR OCCURRED]" $DEFAULT "stop installation ? [Y/n]"
         read stop
         case $stop in
             n|N) return;;
@@ -79,7 +79,7 @@ function change_shell
     read choice
     case $choice in
         n|N) return;;
-        *) chsh $USER -s /usr/bin/zsh; source ~/.zshrc
+        *) chsh $USER -s /usr/bin/zsh
     esac
 }
 
@@ -106,14 +106,6 @@ $PCKG_INSTALL git
 error_handling $?
 echo -e $GREEN "\n======  Successfully installed git  ======\n" $DEFAULT
 
-if [ $PCKG_MANAGER = 'pacman' ]; then
-    echo -e $YELLOW '====  UPDATING YOUR PACKAGE MANAGER  ===='
-    git clone https://aur.archlinux.org/yay.git
-    cd yay
-    makepkg -si
-    PCKG_INSTALL='yay -Sy'
-fi
-
 echo -e $BLUE "---------------------------\n  INSTALLING EDITORS\n----------------------------" $DEFAULT
 echo -e $YELLOW "\n======  NANO  ======\n" $DEFAULT 
 $PCKG_INSTALL nano
@@ -136,7 +128,11 @@ error_handling $?
 echo -e $YELLOW "\n======  OH-MY-ZSH  ======\n" $DEFAULT
 $PCKG_INSTALL awk
 error_handling $? 
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh > oh-my-zsh.sh
+sed -i "s:env zsh:exit:g" oh-my-zsh.sh
+chmod 755 oh-my-zsh.sh
+./oh-my-zsh.sh
+rm oh-my-zsh.sh
 change_shell
 error_handling $?
 echo -e $YELLOW "\n======  TERMINATOR  ======\n" $DEFAULT 
@@ -169,7 +165,7 @@ $PCKG_INSTALL npm
 error_handling $?
 echo -en $GREEN "NODE VERSION : " $(node -v) $DEFAULT
 echo -en $GREEN "NPM VERSION : " $(npm -v) $DEFAULT
-echo -e $GREEN "\n======  Successfully installed curl  ======\n" $DEFAULT
+echo -e $GREEN "\n======  Successfully installed node  ======\n" $DEFAULT
 
 echo -e $BLUE '---------------------------\n  INSTALLING TOOLS\n---------------------------' $DEFAULT
 echo -e $YELLOW "\n======  VALGRIND  ======\n" $DEFAULT 
@@ -188,15 +184,16 @@ error_handling $?
 echo -e $YELLOW "\n======  FIREFOX  ======\n" $DEFAULT 
 $PCKG_INSTALL firefox
 error_handling $?
-echo -e $YELLOW "\n======  GITKRAKEN  ======\n" $DEFAULT 
-$PCKG_INSTALL gitkraken
-error_handling $?
 echo -e $YELLOW "\n======  HTOP  ======\n" $DEFAULT 
 $PCKG_INSTALL htop
 error_handling $?
-echo -e $YELLOW "\n======  ALIAS  ======\n" $DEFAULT 
+echo -e $YELLOW "\n======  ALIAS  ======\n" $DEFAULT
+echo -e $YELLOW"adding cls for clear && ls"
 echo "alias cls='clear; ls -l'" >> ~/.zshrc
+echo "adding ne for emacs -nw"
 echo "alias ne='emacs -nw'" >> ~/.zshrc
+echo "adding dc for docker-compose"
 echo "alias dc='docker-compose'" >> ~/.zshrc
+echo -e "adding please for sudo" $DEFAULT
 echo "alias please='sudo'" >> ~/.zshrc
 echo -e $GREEN "\n======  Successfully installed tools  ======\n" $DEFAULT
