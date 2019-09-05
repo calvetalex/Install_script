@@ -37,7 +37,7 @@ fi
 
 declare -A osInfo;
 osInfo[/etc/redhat-release]=yum
-osInfo[/etc/debian_version]=apt
+osInfo[/etc/debian_version]=apt-get
 osInfo[/etc/arch-release]=pacman
 
 
@@ -152,7 +152,7 @@ error_handling $?
 info "EMACS"
 $PCKG_INSTALL emacs
 error_handling $?
-if [ "$PCKG_MANAGER" != "apt" ];then
+if [ "$PCKG_MANAGER" != "apt-get" ];then
     info "CODE"
     $PCKG_INSTALL code
     error_handling $?
@@ -172,7 +172,7 @@ fi
 error_handling $?
 begin "ADDING TERMS"
 info "Terminator"
-if [ "$PCKG_MANAGER" == "apt" ]; then
+if [ "$PCKG_MANAGER" == "apt-get" ]; then
     sudo add-apt-repository ppa:gnome-terminator
     sudo apt-get update
     sudo apt-get install terminator
@@ -223,7 +223,7 @@ info "Cmake"
 if [ "$PCKG_MANAGER" ==  "pacman" ];then
     $PCKG_INSTALL cmake
     error_handling $?
-elif [ "$PCKG_MANAGER" == "apt" ]; then
+elif [ "$PCKG_MANAGER" == "apt-get" ]; then
     sudo apt-get install software-properties-common
     sudo add-apt-repository ppa:george-edison55/cmake-3.x
     sudo apt-get update
@@ -233,7 +233,7 @@ info "Tree"
 $PCKG_INSTALL tree
 error_handling $?
 info "NCURSE"
-if [ $PCKG_MANAGER == 'apt' ]; then
+if [ $PCKG_MANAGER == 'apt-get' ]; then
     $PCKG_INSTALL libncurses5-dev libncursesw5-dev
 elif [ $PCKG_MANAGER == 'pacman' ]; then
     $PCKG_INSTALL ncurses
