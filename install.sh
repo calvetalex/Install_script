@@ -76,6 +76,10 @@ function error_handling
 
 function change_shell
 {
+    current_shell=(`echo $0`)
+    if [ "$current_shell" == "/usr/bin/zsh" ]; then
+        return
+    fi
     echo -en $YELLOW"Would you like to change to zsh ? [Y/n]"$DEFAULT
     read choice
     case $choice in
@@ -85,29 +89,29 @@ function change_shell
 }
 
 #------ INSTALL -------
-echo -e $BLUE "---------------------------\n  UPDATING SYSTEM\n----------------------------" $DEFAULT
+echo -e $BLUE"---------------------------\n  UPDATING SYSTEM\n----------------------------" $DEFAULT
 $PCKG_UPDATE
 error_handling $?
 echo -e $GREEN "\n======  Successfully update  ======\n" $DEFAULT
 
-echo -e $BLUE '---------------------------\n  INSTALLING CURL AND WGET\n---------------------------' $DEFAULT
+echo -e $BLUE'---------------------------\n  INSTALLING CURL AND WGET\n---------------------------' $DEFAULT
 $PCKG_INSTALL curl
 error_handling $?
 $PCKG_INSTALL wget
 error_handling $?
 echo -e $GREEN "\n======  Successfully installed curl and wget ======\n" $DEFAULT
 
-echo -e $BLUE '---------------------------\n  INSTALLING python\n---------------------------' $DEFAULT
+echo -e $BLUE'---------------------------\n  INSTALLING python\n---------------------------' $DEFAULT
 $PCKG_INSTALL python3
 error_handling $?
 echo -e $GREEN "\n======  Successfully installed python  ======\n" $DEFAULT
 
-echo -e $BLUE '---------------------------\n  INSTALLING GIT\n---------------------------' $DEFAULT
+echo -e $BLUE'---------------------------\n  INSTALLING GIT\n---------------------------' $DEFAULT
 $PCKG_INSTALL git
 error_handling $?
 echo -e $GREEN "\n======  Successfully installed git  ======\n" $DEFAULT
 
-echo -e $BLUE "---------------------------\n  INSTALLING EDITORS\n----------------------------" $DEFAULT
+echo -e $BLUE"---------------------------\n  INSTALLING EDITORS\n----------------------------" $DEFAULT
 echo -e $YELLOW "\n======  NANO  ======\n" $DEFAULT 
 $PCKG_INSTALL nano
 error_handling $?
@@ -124,7 +128,7 @@ if [ "$PCKG_MANAGER" != "apt" ];then
 fi
 echo -e $GREEN "\n======  Successfully installed editors  ======\n" $DEFAULT
 
-echo -e $BLUE '---------------------------\n  INSTALLING TERM\n---------------------------' $DEFAULT
+echo -e $BLUE'---------------------------\n  INSTALLING TERM\n---------------------------' $DEFAULT
 echo -e $YELLOW "\n======  ZSH  ======\n" $DEFAULT 
 $PCKG_INSTALL zsh
 error_handling $?
@@ -132,7 +136,8 @@ echo -e $YELLOW "\n======  OH-MY-ZSH  ======\n" $DEFAULT
 if [ "$PCKG_MANAGER" == "pacman" ];then
     $PCKG_INSTALL awk
     error_handling $?
-fi 
+fi
+echo -e $RED"please, enter exit when zsh will start"$DEFAULT
 curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh > oh-my-zsh.sh
 sed -i "s:env zsh:exit:g" oh-my-zsh.sh
 chmod 755 oh-my-zsh.sh
@@ -149,24 +154,24 @@ $PCKG_INSTALL tmux
 error_handling $?
 echo -e $GREEN "\n======  Successfully installed term and shell config  ======\n" $DEFAULT
 
-echo -e $BLUE '---------------------------\n  INSTALLING GCC\n---------------------------' $DEFAULT
+echo -e $BLUE'---------------------------\n  INSTALLING GCC\n---------------------------' $DEFAULT
 $PCKG_INSTALL gcc
 error_handling $?
 echo -e $GREEN "\n======  Successfully installed gcc  ======\n" $DEFAULT
 
-echo -e $BLUE '---------------------------\n  INSTALLING DOCKER \n---------------------------' $DEFAULT
+echo -e $BLUE'---------------------------\n  INSTALLING DOCKER \n---------------------------' $DEFAULT
 $PCKG_INSTALL docker docker-compose
 error_handling $?
 echo -e $GREEN "\n======  Successfully installed docker  ======\n" $DEFAULT
 
-echo -e $BLUE '---------------------------\n  SSH KEY GEN\n---------------------------' $DEFAULT
+echo -e $BLUE'---------------------------\n  SSH KEY GEN\n---------------------------' $DEFAULT
 $PCKG_INSTALL openssh
 echo -e $BLUE "LEAVE EVERYTHING AS DEFAULT" $DEFAULT
 ssh-keygen
 error_handling $?
 echo -e $GREEN "\n======  SSH ready  ======\n" $DEFAULT
 
-echo -e $BLUE '---------------------------\n  INSTALLING NODE\n---------------------------' $DEFAULT
+echo -e $BLUE'---------------------------\n  INSTALLING NODE\n---------------------------' $DEFAULT
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 $PCKG_INSTALL nodejs
 error_handling $?
@@ -176,7 +181,7 @@ echo -en $GREEN "NODE VERSION : " $(node -v) $DEFAULT
 echo -en $GREEN "NPM VERSION : " $(npm -v) $DEFAULT
 echo -e $GREEN "\n======  Successfully installed node  ======\n" $DEFAULT
 
-echo -e $BLUE '---------------------------\n  INSTALLING TOOLS\n---------------------------' $DEFAULT
+echo -e $BLUE'---------------------------\n  INSTALLING TOOLS\n---------------------------' $DEFAULT
 echo -e $YELLOW "\n======  VALGRIND  ======\n" $DEFAULT 
 $PCKG_INSTALL valgrind
 error_handling $?
@@ -206,3 +211,5 @@ echo "alias dc='docker-compose'" >> ~/.zshrc
 echo -e "adding please for sudo" $DEFAULT
 echo "alias please='sudo'" >> ~/.zshrc
 echo -e $GREEN "\n======  Successfully installed tools  ======\n" $DEFAULT
+
+echo -e $GREEN"\nComputer Ready - Please close and open a new terminal to see changes\n"$DEFAULT
