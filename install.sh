@@ -45,10 +45,10 @@ do
     fi
 done
 
-if [ $PCKG_MANAGER = "pacman" ]; then
+if [ $PCKG_MANAGER == "pacman" ]; then
     PCKG_UPDATE='sudo pacman --noconfirm -Syyu'
     PCKG_INSTALL='sudo pacman --noconfirm -Sy'
-elif [ $PCKG_MANAGER = "apt" ]; then
+elif [ $PCKG_MANAGER == "apt" ]; then
     PCKG_UPDATE='sudo apt -y update; sudo apt-get -y upgrade'
     PCKG_INSTALL='sudo apt install'
 else
@@ -175,9 +175,9 @@ echo -e $YELLOW "\n======  TREE  ======\n" $DEFAULT
 $PCKG_INSTALL tree
 error_handling $?
 echo -e $YELLOW "\n======  NCURSE  ======\n" $DEFAULT 
-if [ $PCKG_MANAGER = 'apt-get' ]; then
+if [ $PCKG_MANAGER == 'apt' ]; then
     $PCKG_INSTALL libncurses5-dev libncursesw5-dev
-elif [ $PCKG_MANAGER = 'pacman' ]; then
+elif [ $PCKG_MANAGER == 'pacman' ]; then
     $PCKG_INSTALL ncurses
 fi
 error_handling $?
