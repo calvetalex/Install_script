@@ -46,6 +46,9 @@ do
     if [[ -f $f ]];then
         echo -e $BLUE Package manager: ${osInfo[$f]} $DEFAULT
         PCKG_MANAGER=${osInfo[$f]}
+        if [ "$PCKG_MANAGER" != "pacman" ];then
+            echo -e $RED"You should redump on Arch"$DEFAULT
+        fi
     fi
 done
 
@@ -172,12 +175,7 @@ fi
 error_handling $?
 begin "ADDING TERMS"
 info "Terminator"
-if [ "$PCKG_MANAGER" == "apt-get" ]; then
-    sudo add-apt-repository ppa:gnome-terminator
-    sudo apt-get update
-    sudo apt-get install terminator
-    error_handling $?
-else
+if [ "$PCKG_MANAGER" == "pacman" ]; then
     $PCKG_INSTALL terminator
     error_handling $?
 fi
