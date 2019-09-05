@@ -52,9 +52,9 @@ done
 if [ $PCKG_MANAGER == "pacman" ]; then
     PCKG_UPDATE='sudo pacman --noconfirm -Syyu'
     PCKG_INSTALL='sudo pacman --noconfirm -Sy'
-elif [ $PCKG_MANAGER == "apt" ]; then
-    PCKG_UPDATE='sudo apt update'
-    PCKG_INSTALL='sudo apt install'
+elif [ $PCKG_MANAGER == "apt-get" ]; then
+    PCKG_UPDATE='sudo apt-get update'
+    PCKG_INSTALL='sudo apt-get install'
 else
     echo -e $RED "Package manager not supported\n" $DEFAULT
     exit 84
@@ -172,8 +172,15 @@ fi
 error_handling $?
 begin "ADDING TERMS"
 info "Terminator"
-$PCKG_INSTALL terminator
-error_handling $?
+if [ "$PCKG_MANAGER" == "apt" ]; then
+    sudo add-apt-repository ppa:gnome-terminator
+    sudo apt-get update
+    sudo apt-get install terminator
+    error_handling $?
+else
+    $PCKG_INSTALL terminator
+    error_handling $?
+fi
 info "Tmux"
 $PCKG_INSTALL tmux
 error_handling $?
@@ -184,10 +191,12 @@ $PCKG_INSTALL gcc
 error_handling $?
 success "SUCCESSFULLY INSTALLED GCC"
 
-begin "INSTALL DOCKER AND DOCKER-COMPOSE"
-$PCKG_INSTALL docker docker-compose
-error_handling $?
-success "SUCCESSFULLY INSTALLED DOCKER AND DOCKER-COMPOSE"
+if [ "$PCKG_MANAGER" == "pacman" ];then
+    begin "INSTALL DOCKER AND DOCKER-COMPOSE"
+    $PCKG_INSTALL docker docker-compose
+    error_handling $?
+    success "SUCCESSFULLY INSTALLED DOCKER AND DOCKER-COMPOSE"
+fi
 
 begin "INSTALL SSH TOOLS"
 $PCKG_INSTALL openssh
@@ -210,6 +219,16 @@ begin "INSTALL TOOLS"
 info "Valgrind"
 $PCKG_INSTALL valgrind
 error_handling $?
+info "Cmake"
+if [ "$PCKG_MANAGER" ==  "pacman" ];then
+    $PCKG_INSTALL cmake
+    error_handling $?
+elif [ "$PCKG_MANAGER" == "apt" ]; then
+    sudo apt-get install software-properties-common
+    sudo add-apt-repository ppa:george-edison55/cmake-3.x
+    sudo apt-get update
+    sudo apt-get install cmake
+fi
 info "Tree"
 $PCKG_INSTALL tree
 error_handling $?
