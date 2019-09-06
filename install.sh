@@ -20,8 +20,13 @@ if [ $# -ne 0 ]; then
     exit 84
 fi
 
-if [ ! -f "./oh-my-zsh.sh" ]; then
-    echo -e $RED"Please run the script in the same directory as oh-my-zsh.sh"$DEFAULT
+if [ ! -f "./install_files/oh-my-zsh.sh" ]; then
+    echo -e $RED"Please run the script in his directory"$DEFAULT
+    exit 84
+fi
+
+if [ ! -d "./install_files/.emacs.d" ]; then
+    echo -e $RED"Please run the script in his directory"$DEFAULT
     exit 84
 fi
 
@@ -36,7 +41,6 @@ else
 fi
 
 declare -A osInfo;
-osInfo[/etc/redhat-release]=yum
 osInfo[/etc/debian_version]=apt-get
 osInfo[/etc/arch-release]=pacman
 
@@ -155,9 +159,37 @@ error_handling $?
 info "EMACS"
 $PCKG_INSTALL emacs
 error_handling $?
+cp -r install_files/.emacs.d ~
+error_handling $?
+cp install_files/.emacs.d/.emacs ~
+error_handling $?
 if [ "$PCKG_MANAGER" != "apt-get" ];then
     info "CODE"
     $PCKG_INSTALL code
+    error_handling $?
+    echo -e $YELLOW"--> cpptools extension"$DEFAULT
+    code --install-extension ms-vscode.cpptools
+    error_handling $?
+    echo -e $YELLOW"--> eslint extension"$DEFAULT
+    code --install-extension dbaeumer.vscode-eslint
+    error_handling $?
+    echo -e $YELLOW"--> git-graph extension"$DEFAULT
+    code --install-extension mhutchie.git-graph
+    error_handling $?
+    echo -e $YELLOW"--> git history extension"$DEFAULT
+    code --install-extension donjayamanne.githistory
+    error_handling $?
+    echo -e $YELLOW"--> git lens extension"$DEFAULT
+    code --install-extension eamodio.gitlens
+    error_handling $?
+    echo -e $YELLOW"--> live share extension"$DEFAULT
+    code --install-extension ms-vsliveshare.vsliveshare
+    error_handling $?
+    echo -e $YELLOW"--> TODO highlight extension"$DEFAULT
+    code --install-extension wayou.vscode-todo-highlight
+    error_handling $?
+    echo -e $YELLOW"--> material icon extension"$DEFAULT
+    code --install-extension pkief.material-icon-theme
     error_handling $?
 fi
 success "SUCCESSFULLY INSTALLED EDITORS"
@@ -171,7 +203,7 @@ if [ "$PCKG_MANAGER" == "pacman" ];then
     $PCKG_INSTALL awk
     error_handling $?
 fi
-./oh-my-zsh.sh
+./install_files/oh-my-zsh.sh
 error_handling $?
 begin "ADDING TERMS"
 info "Terminator"

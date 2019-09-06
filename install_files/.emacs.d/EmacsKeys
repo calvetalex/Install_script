@@ -1,0 +1,12 @@
+Flycheck :
+	 F6		Activate/Disactivate
+
+NeoTree :
+	F8		Activate/Disactivate
+	Up/Down Key 	Navigate
+	Enter		Select
+	g		Refresh
+	C-c C-n		New File/Folder
+	C-c C-d 	Delete File/Folder
+	C-c C-r		Rename File/Folder
+	C-c C-p		Copy File/Folder
