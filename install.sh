@@ -7,6 +7,16 @@ GREEN='\033[1;32m'
 BLUE='\033[1;36m'
 DEFAULT='\033[00m'
 
+function usage
+{
+    echo -e $BLUE
+    echo "USAGE:"
+    echo -e "\t./install.sh [-h] [extensions file]"
+    echo "DESCRIPTION:"
+    echo -e "\t-h\t\t\tdisplay help"
+    echo -e "\textensions file\t\tpath to file with on extension name per line"
+    echo -e $DEFAULT
+}
 
 #------ FIRST ERROR HANDLING -------
 
@@ -16,9 +26,18 @@ if [ "$(id -u)" == "0" ]; then
 fi
 
 if [ $# -ne 0 ]; then
-    echo -e $RED "======= No argument required =======" $DEFAULT
-    exit 84
+    if [ "$1" == "-h" ];then
+        usage
+        exit 0
+    elif [ -f "$1" ]; then
+        EXTENSIONS="$1"
+    else
+        echo -e $RED "======= START ERROR: TRY ./install.sh -h =======" $DEFAULT
+        exit 84
+    fi
 fi
+
+echo $EXTENSIONS
 
 if [ ! -f "./install_files/oh-my-zsh.sh" ]; then
     echo -e $RED"Please run the script in his directory"$DEFAULT
@@ -98,6 +117,46 @@ function change_shell
     esac
 }
 
+function default_extensions {
+        echo -e $YELLOW"--> cpptools extension"$DEFAULT
+        code --install-extension ms-vscode.cpptools
+        error_handling $?
+        echo -e $YELLOW"--> eslint extension"$DEFAULT
+        code --install-extension dbaeumer.vscode-eslint
+        error_handling $?
+        echo -e $YELLOW"--> git-graph extension"$DEFAULT
+        code --install-extension mhutchie.git-graph
+        error_handling $?
+        echo -e $YELLOW"--> git history extension"$DEFAULT
+        code --install-extension donjayamanne.githistory
+        error_handling $?
+        echo -e $YELLOW"--> git lens extension"$DEFAULT
+        code --install-extension eamodio.gitlens
+        error_handling $?
+        echo -e $YELLOW"--> live share extension"$DEFAULT
+        code --install-extension ms-vsliveshare.vsliveshare
+        error_handling $?
+        echo -e $YELLOW"--> TODO highlight extension"$DEFAULT
+        code --install-extension wayou.vscode-todo-highlight
+        error_handling $?
+        echo -e $YELLOW"--> material icon extension"$DEFAULT
+        code --install-extension pkief.material-icon-theme
+        error_handling $?
+        echo -e $YELLOW"--> bracket pair colorized 2"$DEFAULT
+        code --install-extension coenraads.bracket-pair-colorizer-2
+        error_handling $?
+}
+
+function install_extensions
+{
+        echo -en $BLUE"Do you want to install default extensions too ?[Y|n]"$DEFAULT
+        read choice
+        case $choice in
+            n|N) return;;
+            *) default_extensions;;
+        esac
+}
+
 function drawline {
     printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' $1
 }
@@ -167,30 +226,16 @@ if [ "$PCKG_MANAGER" != "apt-get" ];then
     info "CODE"
     $PCKG_INSTALL code
     error_handling $?
-    echo -e $YELLOW"--> cpptools extension"$DEFAULT
-    code --install-extension ms-vscode.cpptools
-    error_handling $?
-    echo -e $YELLOW"--> eslint extension"$DEFAULT
-    code --install-extension dbaeumer.vscode-eslint
-    error_handling $?
-    echo -e $YELLOW"--> git-graph extension"$DEFAULT
-    code --install-extension mhutchie.git-graph
-    error_handling $?
-    echo -e $YELLOW"--> git history extension"$DEFAULT
-    code --install-extension donjayamanne.githistory
-    error_handling $?
-    echo -e $YELLOW"--> git lens extension"$DEFAULT
-    code --install-extension eamodio.gitlens
-    error_handling $?
-    echo -e $YELLOW"--> live share extension"$DEFAULT
-    code --install-extension ms-vsliveshare.vsliveshare
-    error_handling $?
-    echo -e $YELLOW"--> TODO highlight extension"$DEFAULT
-    code --install-extension wayou.vscode-todo-highlight
-    error_handling $?
-    echo -e $YELLOW"--> material icon extension"$DEFAULT
-    code --install-extension pkief.material-icon-theme
-    error_handling $?
+    if [ -z "$EXTENSIONS" ]; then
+        default_extensions
+    else
+        install_extensions
+        echo -e $YELLOW"--> Installing custom extensions"$DEFAULT
+        for extension in $(cat $EXTENSIONS);do
+            code --install-extension $extension
+            error_handling $?
+        done
+    fi
 fi
 success "SUCCESSFULLY INSTALLED EDITORS"
 
