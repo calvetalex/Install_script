@@ -1,9 +1,11 @@
 # Installation script
 
 This script will install a basic env to work. More complete on arch, it also works on ubuntu but fewer packages will be installed. If you can install Arch linux.
+You can add a config file with extensions name for code to the script to have them automatically installed. _Provide the full name of the form publisher.extension, for example ms-vscode.cpptools._
 
 ## USE
 Clone the repo and run install.sh in the directory. Don t move any file and just let install.sh make the job.
+You can run *./install.sh -h* to know how work the script.
 
 Known issues : 
 * node crash sometimes on ubuntu => TODO
@@ -35,6 +37,7 @@ Tested on archlinux/base docker image (https://hub.docker.com/u/archlinux), manj
         * extension C/C++ tools
         * extension eslint (norme for JS)
         * extension material icon (to have a better visuel)
+        * feat : you can add custom extensions
     * node
     * terminator (for arch)
     * tmux
