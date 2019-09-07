@@ -14,7 +14,7 @@ function usage
     echo -e "\t./install.sh [-h] [extensions file]"
     echo "DESCRIPTION:"
     echo -e "\t-h\t\t\tdisplay help"
-    echo -e "\textensions file\t\tpath to file with on extension name per line"
+    echo -e "\textensions file\t\tpath to file with on extension name per line, only avaible on arch"
     echo -e $DEFAULT
 }
 
@@ -222,7 +222,7 @@ cp -r install_files/.emacs.d ~
 error_handling $?
 cp install_files/.emacs.d/.emacs ~
 error_handling $?
-if [ "$PCKG_MANAGER" != "apt-get" ];then
+if [ "$PCKG_MANAGER" == "pacman" ];then
     info "CODE"
     $PCKG_INSTALL code
     error_handling $?
@@ -251,8 +251,8 @@ fi
 ./install_files/oh-my-zsh.sh
 error_handling $?
 begin "ADDING TERMS"
-info "Terminator"
 if [ "$PCKG_MANAGER" == "pacman" ]; then
+    info "Terminator"
     $PCKG_INSTALL terminator
     error_handling $?
 fi
