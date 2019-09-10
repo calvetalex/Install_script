@@ -1,11 +1,13 @@
 #! /bin/bash
 
-#-----COLOR--------
+#----- COLOR --------
 RED='\033[1;31m'
 YELLOW='\033[1;93m'
 GREEN='\033[1;32m'
 BLUE='\033[1;36m'
 DEFAULT='\033[00m'
+
+#------- USEFUL FUNCTIONS ------
 
 function usage
 {
@@ -17,76 +19,6 @@ function usage
     echo -e "\textensions file\t\tpath to file with on extension name per line, only avaible on arch"
     echo -e $DEFAULT
 }
-
-#------ FIRST ERROR HANDLING -------
-
-if [ "$(id -u)" == "0" ]; then
-    echo -e $RED "====== Don't run this as root =======" $DEFAULT
-    exit 84
-fi
-
-if [ $# -ne 0 ]; then
-    if [ "$1" == "-h" ];then
-        usage
-        exit 0
-    elif [ -f "$1" ]; then
-        EXTENSIONS="$1"
-    else
-        echo -e $RED "======= START ERROR: TRY ./install.sh -h =======" $DEFAULT
-        exit 84
-    fi
-fi
-
-echo $EXTENSIONS
-
-if [ ! -f "./install_files/oh-my-zsh.sh" ]; then
-    echo -e $RED"Please run the script in his directory"$DEFAULT
-    exit 84
-fi
-
-if [ ! -d "./install_files/.emacs.d" ]; then
-    echo -e $RED"Please run the script in his directory"$DEFAULT
-    exit 84
-fi
-
-#--------ENV-------
-
-OS=(`uname`)
-if [ $OS = "Linux" ]; then
-    echo -e $BLUE "You are using a $OS !\n\tWELCOME\n" $DEFAULT
-else
-    echo -e $RED "Only Linux is supported\n" $DEFAULT
-    exit 84
-fi
-
-declare -A osInfo;
-osInfo[/etc/debian_version]=apt-get
-osInfo[/etc/arch-release]=pacman
-
-
-for f in ${!osInfo[@]}
-do
-    if [[ -f $f ]];then
-        echo -e $BLUE Package manager: ${osInfo[$f]} $DEFAULT
-        PCKG_MANAGER=${osInfo[$f]}
-        if [ "$PCKG_MANAGER" != "pacman" ];then
-            echo -e $RED"You should redump on Arch"$DEFAULT
-        fi
-    fi
-done
-
-if [ $PCKG_MANAGER == "pacman" ]; then
-    PCKG_UPDATE='sudo pacman --noconfirm -Syyu'
-    PCKG_INSTALL='sudo pacman --noconfirm -Sy'
-elif [ $PCKG_MANAGER == "apt-get" ]; then
-    PCKG_UPDATE='sudo apt-get update'
-    PCKG_INSTALL='sudo apt-get install'
-else
-    echo -e $RED "Package manager not supported\n" $DEFAULT
-    exit 84
-fi
-
-#------- USEFUL FUNCTIONS ------
 
 function error_handling
 {
@@ -184,6 +116,79 @@ function info {
     drawline '#'
     echo -e $DEFAULT
 }
+
+
+#------ FIRST ERROR HANDLING -------
+
+# Verify user
+if [ "$(id -u)" == "0" ]; then
+    echo -e $RED "====== Don't run this as root =======" $DEFAULT
+    exit 84
+fi
+
+
+# Verify cmd entered
+if [ $# -ne 0 ]; then
+    if [ "$1" == "-h" ];then
+        usage
+        exit 0
+    elif [ -f "$1" ]; then
+        EXTENSIONS="$1"
+    else
+        echo -e $RED "======= START ERROR: TRY ./install.sh -h =======" $DEFAULT
+        exit 84
+    fi
+fi
+
+# Verify necessary files
+if [ ! -f "./install_files/oh-my-zsh.sh" ]; then
+    echo -e $RED"Please run the script in his directory"$DEFAULT
+    exit 84
+fi
+
+if [ ! -d "./install_files/.emacs.d" ]; then
+    echo -e $RED"Please run the script in his directory"$DEFAULT
+    exit 84
+fi
+
+#--------ENV-------
+
+# Check if os is a linux
+OS=(`uname`)
+if [ $OS = "Linux" ]; then
+    echo -e $BLUE "You are using a $OS !\n\tWELCOME\n" $DEFAULT
+else
+    echo -e $RED "Only Linux is supported\n" $DEFAULT
+    exit 84
+fi
+
+# Get package manager
+declare -A osInfo;
+osInfo[/etc/debian_version]=apt-get
+osInfo[/etc/arch-release]=pacman
+
+for f in ${!osInfo[@]}
+do
+    if [[ -f $f ]];then
+        echo -e $BLUE Package manager: ${osInfo[$f]} $DEFAULT
+        PCKG_MANAGER=${osInfo[$f]}
+        if [ "$PCKG_MANAGER" != "pacman" ];then
+            echo -e $RED"You should redump on Arch"$DEFAULT
+        fi
+    fi
+done
+
+# Up package manager, install cmd and update cmd
+if [ $PCKG_MANAGER == "pacman" ]; then
+    PCKG_UPDATE='sudo pacman --noconfirm -Syyu'
+    PCKG_INSTALL='sudo pacman --noconfirm -Sy'
+elif [ $PCKG_MANAGER == "apt-get" ]; then
+    PCKG_UPDATE='sudo apt-get update'
+    PCKG_INSTALL='sudo apt-get -y install'
+else
+    echo -e $RED "Package manager not supported\n" $DEFAULT
+    exit 84
+fi
 
 #------ INSTALL -------
 begin "UPDATE SYSTEM"
