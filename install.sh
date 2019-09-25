@@ -211,6 +211,9 @@ success "PYTHON READY"
 begin "INSTALLING GIT"
 $PCKG_INSTALL git
 error_handling $?
+info "INSTALL git lg alias for a better git log"
+echo -e $BLUE "=> IF IT ASKS YOU IF YOU WANT TO PUT .config INSTEAD OF config SAY NO" $DEFAULT
+git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 success "SUCCESSFULLY INSTALLED GIT"
 
 begin "INSTALLING EDITORS"
@@ -324,6 +327,9 @@ $PCKG_INSTALL firefox
 error_handling $?
 info "HTOP"
 $PCKG_INSTALL htop
+error_handling $?
+info "BROWSER WEB IN TERM"
+$PCKG_INSTALL links
 error_handling $?
 info "ALIAS"
 echo -e $YELLOW"--> adding cls for clear && ls"
