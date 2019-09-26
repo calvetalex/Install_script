@@ -208,6 +208,11 @@ $PCKG_INSTALL python3
 error_handling $?
 success "PYTHON READY"
 
+begin "INSTALL GOLANG"
+$PCKG_INSTALL go
+error_handling $?
+success "GOLANG"
+
 begin "INSTALLING GIT"
 $PCKG_INSTALL git
 error_handling $?
