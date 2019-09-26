@@ -48,6 +48,7 @@ Tested on archlinux/base docker image (https://hub.docker.com/u/archlinux), manj
        * git lg (a prettier git log)
     * gcc
     * python3
+    * go
     * add zsh
     * add oh-my-zsh
     * basics alias¹
