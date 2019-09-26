@@ -1,0 +1,21 @@
+version: '3.5'
+
+services:
+  epitech_test:
+    image: epitechcontent/epitest-docker
+    container_name: fedora_test
+    volumes:
+      - ./:/testing
+    tty: true
+  test_ubuntu:
+    image: ubuntu
+    container_name: ubuntu_test
+    volumes:
+      - ./:/testing
+    tty: true
+  test_manjaro:
+    image: archlinux/base
+    container_name: manjaro_test
+    volumes:
+      - ./:/testing
+    tty: true

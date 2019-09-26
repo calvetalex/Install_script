@@ -284,6 +284,10 @@ if [ "$PCKG_MANAGER" == "pacman" ];then
     begin "INSTALL DOCKER AND DOCKER-COMPOSE"
     $PCKG_INSTALL docker docker-compose
     error_handling $?
+    systemctl start docker.service
+    error_handling $?
+    cp -rf ./install_files/test_project ~
+    echo -e "$BLUE You can now test your projects in ~/test_projects on dockers\n default Dockers: ubuntu, archlinux/base and fedora $DEFAULT" 
     success "SUCCESSFULLY INSTALLED DOCKER AND DOCKER-COMPOSE"
 fi
 
