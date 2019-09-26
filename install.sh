@@ -208,16 +208,17 @@ $PCKG_INSTALL python3
 error_handling $?
 success "PYTHON READY"
 
+if [ "$PCKG_MANAGER" == "pacman" ]; then
 begin "INSTALL GOLANG"
 $PCKG_INSTALL go
 error_handling $?
 success "GOLANG"
+fi
 
 begin "INSTALLING GIT"
 $PCKG_INSTALL git
 error_handling $?
 info "INSTALL git lg alias for a better git log"
-echo -e $BLUE "=> IF IT ASKS YOU IF YOU WANT TO PUT .config INSTEAD OF config SAY NO" $DEFAULT
 git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 success "SUCCESSFULLY INSTALLED GIT"
 
