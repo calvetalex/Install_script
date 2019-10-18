@@ -346,8 +346,8 @@ echo -e $YELLOW"--> adding cls for clear && ls"
 echo "alias cls='clear; ls -l'" >> ~/.zshrc
 echo "--> adding ne for emacs -nw"
 echo "alias ne='emacs -nw'" >> ~/.zshrc
-echo "--> adding dc for docker-compose"
-echo "alias dc='docker-compose'" >> ~/.zshrc
+echo "--> adding dkc for docker-compose"
+echo "alias dkc='sudo docker-compose'" >> ~/.zshrc
 echo -e "--> adding please for sudo" $DEFAULT
 echo "alias please='sudo'" >> ~/.zshrc
 success "SUCCESSFULLY INSTALLED TOOLS"
