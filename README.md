@@ -7,8 +7,8 @@ You can add a config file with extensions name for code to the script to have th
 Clone the repo and run install.sh in the directory. Don t move any file and just let install.sh make the job. Reset after installation.
 You can run *./install.sh -h* to know how work the script.
 
-Known issues : 
-* node crash sometimes on ubuntu => TODO
+Known issues :
+* node crash sometimes on ubuntu but node version avaible => Don t end the script
 * code non-avaible for ubuntu => Install it with Ubuntu Software
 * terminator non-avaible for ubuntu => Install it with Ubuntu Software
 * docker on ubuntu => Install it manually
@@ -37,7 +37,7 @@ Tested on archlinux/base docker image (https://hub.docker.com/u/archlinux), manj
         * extension C/C++ tools
         * extension eslint (norme for JS)
         * extension material icon (to have a better visuel)
-        * feat : you can add custom extensions
+        * feat : you can add custom extensions (for this please enter ```./install.sh file```, where file is a list of full extensions names: publisher.extension)
     * node
     * terminator (for arch)
     * tmux
@@ -60,4 +60,4 @@ Tested on archlinux/base docker image (https://hub.docker.com/u/archlinux), manj
 
 
 
-¹: alias cls="clear ; ls" / alias ne="emacs -nw" / alias dc="docker-compose" / alias please="sudo"
+¹: alias cls="clear ; ls" / alias ne="emacs -nw" / alias dkc="sudo docker-compose" / alias please="sudo"
