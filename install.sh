@@ -117,6 +117,29 @@ function info {
     echo -e $DEFAULT
 }
 
+function etipek {
+    info "INSTALLING BLIH"
+    curl https://raw.githubusercontent.com/kayofeld/script-installation-ordinateur-epitech/master/installation/.files/blih > blih.py
+    if [ $? -eq 0 ]; then
+        chmod +x blih.py
+        sudo mv blih.py /bin/blih
+    else
+        echo -en $RED "[AN ERROR OCCURRED]" $DEFAULT "Blih was not installed"
+        return;
+    fi
+    info "UPLOAD SSH KEY"
+    read -p "Enter your epitech address: " email
+    blih -u $email sshkey upload ~/.ssh/id_rsa.pub
+}
+
+function epitech_install {
+    echo "Are you an EPITECH student ? [Y|n]"
+    read answer
+    case $answer in
+        n|N) return;;
+        *) etipek
+    esac
+}
 
 #------ FIRST ERROR HANDLING -------
 
@@ -226,6 +249,8 @@ begin "INSTALLING EDITORS"
 info "NANO"
 $PCKG_INSTALL nano
 error_handling $?
+info "enable color in nano...."
+find /usr/share/nano/ -iname "*.nanorc" -exec echo include {} \; >> ~/.nanorc
 info "VIM"
 $PCKG_INSTALL vim
 error_handling $?
@@ -350,6 +375,12 @@ echo "--> adding dkc for docker-compose"
 echo "alias dkc='sudo docker-compose'" >> ~/.zshrc
 echo -e "--> adding please for sudo" $DEFAULT
 echo "alias please='sudo'" >> ~/.zshrc
+echo -e "--> adding reload cmd" $DEFAULT
+echo "alias reload='source ~/.zshrc'" >> ~/.zshrc
 success "SUCCESSFULLY INSTALLED TOOLS"
+
+begin "EPITECH CONFIG"
+epitech_install
+success "EPITECH INSTALL COMPLETE"
 
 echo -e $GREEN"\nComputer Ready - Please close and open a new terminal to see changes\n"$DEFAULT
