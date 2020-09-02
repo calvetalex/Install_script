@@ -5,7 +5,7 @@ You can add a config file with extensions name for code to the script to have th
 
 ## USE
 Clone the repo and run install.sh in the directory. Don t move any file and just let install.sh make the job. Reset after installation.
-You can run *./install.sh -h* to know how work the script.
+You can run *./init.sh -h* to know how work the script.
 
 Known issues :
 * node crash sometimes on ubuntu but node version avaible => Don t end the script
@@ -58,6 +58,6 @@ Tested on archlinux/base docker image (https://hub.docker.com/u/archlinux), manj
     * cmake
     * links
 
-
+For arch user, will install yay.
 
 ¹: alias cls="clear ; ls" / alias ne="emacs -nw" / alias dkc="sudo docker-compose" / alias please="sudo"

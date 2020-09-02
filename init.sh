@@ -379,6 +379,20 @@ echo -e "--> adding reload cmd" $DEFAULT
 echo "alias reload='source ~/.zshrc'" >> ~/.zshrc
 success "SUCCESSFULLY INSTALLED TOOLS"
 
+if [ "$PCKG_MANAGER" == "pacman" ]; then
+    begin "ADDING YAY"
+    cd ~
+    git clone https://aur.archlinux.org/yay.git
+    error_handling $?
+    cd yay
+    $PCKG_INSTALL makepkg
+    error_handling $?
+    makepkg -si
+    error_handling $?
+    cd ~
+    success "YAY ADDED"
+fi
+
 begin "EPITECH CONFIG"
 epitech_install
 success "EPITECH INSTALL COMPLETE"
