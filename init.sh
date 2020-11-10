@@ -117,27 +117,20 @@ function info {
     echo -e $DEFAULT
 }
 
-function etipek {
-    info "INSTALLING BLIH"
-    curl https://raw.githubusercontent.com/kayofeld/script-installation-ordinateur-epitech/master/installation/.files/blih > blih.py
-    if [ $? -eq 0 ]; then
-        chmod +x blih.py
-        sudo mv blih.py /bin/blih
-    else
-        echo -en $RED "[AN ERROR OCCURRED]" $DEFAULT "Blih was not installed"
-        return;
-    fi
-    info "UPLOAD SSH KEY"
-    read -p "Enter your epitech address: " email
-    blih -u $email sshkey upload ~/.ssh/id_rsa.pub
+function get_theme {
+    curl -L https://raw.githubusercontent.com/calvetalex/my_custom_minimal.zsh-theme/master/my_custom_minimal.zsh-theme > .oh-my-zsh/themes/custom_theme.zsh-theme
+    drawline '='
+    echo "HOW TO USE THIS THEME"
+    echo "Change your .zshrc to set ZSH_THEME on custom_theme.zsh-theme"
+    drawline '='
 }
 
-function epitech_install {
-    echo "Are you an EPITECH student ? [Y|n]"
+function custom_theme {
+    echo "Do you want this zsh theme ? https://github.com/calvetalex/my_custom_minimal.zsh-theme"
     read answer
     case $answer in
         n|N) return;;
-        *) etipek
+        *) get_theme
     esac
 }
 
@@ -312,7 +305,7 @@ if [ "$PCKG_MANAGER" == "pacman" ];then
     systemctl start docker.service
     error_handling $?
     cp -rf ./install_files/test_project ~
-    echo -e "$BLUE You can now test your projects in ~/test_projects on dockers\n default Dockers: ubuntu, archlinux/base and fedora $DEFAULT" 
+    echo -e "$BLUE You can now test your projects in ~/test_projects on dockers\n default Dockers: ubuntu, archlinux/base and fedora $DEFAULT"
     success "SUCCESSFULLY INSTALLED DOCKER AND DOCKER-COMPOSE"
 fi
 
@@ -393,8 +386,7 @@ if [ "$PCKG_MANAGER" == "pacman" ]; then
     success "YAY ADDED"
 fi
 
-begin "EPITECH CONFIG"
-epitech_install
-success "EPITECH INSTALL COMPLETE"
+begin "GET CUSTOM SHELL"
+custom_theme
 
 echo -e $GREEN"\nComputer Ready - Please close and open a new terminal to see changes\n"$DEFAULT
