@@ -121,7 +121,7 @@ function get_theme {
     curl -L https://raw.githubusercontent.com/calvetalex/my_custom_minimal.zsh-theme/master/my_custom_minimal.zsh-theme > .oh-my-zsh/themes/custom_theme.zsh-theme
     drawline '='
     echo "HOW TO USE THIS THEME"
-    echo "Change your .zshrc to set ZSH_THEME on custom_theme.zsh-theme"
+    echo "Change your .zshrc to set ZSH_THEME on custom_theme"
     drawline '='
 }
 
